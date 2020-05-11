@@ -3,6 +3,7 @@ from pathlib import Path
 from widgets.imagewidget import ImageWidget
 from widgets.imageswidget import ImagesWidget
 from widgets.webpagewidget import WebPageWidget
+from widgets.resourcewidget import ResourceWidget
 from widgets.rsswidget import RssWidget
 from tools.rssimages import RssImages
 from tools.rssfeeds import RssFeeds
@@ -21,6 +22,10 @@ class Display():
         self._image.image = 'https://papers.co/wallpaper/papers.co-mt01-winter-mountain-snow-bw-nature-white-35-3840x2160-4k-wallpaper.jpg'
         self._image.qrect = QtCore.QRect(0, 0, 1920, 1080)
         self._image.start()
+
+        self._rw = ResourceWidget(self.centralWidget, self._callback)
+        self._rw.qrect = QtCore.QRect(800, 930, 320, 100)
+        self._rw.start()
 
         self._lwpw1 = ImagesWidget(self.centralWidget, self._callback)
         self._lwpw1.imageprovider = RssImages(
