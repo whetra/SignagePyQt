@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 import os
 import psutil
+from string import Template
 from datetime import datetime
 from tools.timer import QTimerSingleShot
 
@@ -39,18 +40,29 @@ class ResourceWidget(QtCore.QObject):
     def _get_text(self):
         pid = os.getpid()
         proc = psutil.Process(pid)
-        boot_time = datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
-        started = datetime.fromtimestamp(proc.create_time()).strftime('%Y-%m-%d %H:%M:%S')
+        boot_time = psutil.boot_time()
+        started = proc.create_time()
         mem = psutil.virtual_memory()
         proc_mem = proc.memory_info()
         io_counters = proc.io_counters()
-        return (
-            f"boot: {boot_time}\n"
-            f"started: {started}\n"
-            f"memory: total={self.bytes2human(mem.total)}, used={self.bytes2human(mem.used)}\n"
-            f"process memory: {self.bytes2human(proc_mem.rss)}\n"
-            f"process io: read_count={self.bytes2human(io_counters.read_count)}, write_count={self.bytes2human(io_counters.write_count)}\n"
-            f"            read_bytes={self.bytes2human(io_counters.read_bytes)}, write_bytes={self.bytes2human(io_counters.write_bytes)}\n"
+        text = Template((
+            "boot: $boot_time\n"
+            "started: $started\n"
+            "memory: total=$mem_total, used=$mem_used\n"
+            "process memory: $proc_mem_rss\n"
+            "process io: read_count=$read_count, write_count=$write_count\n"
+            "            read_bytes=$read_bytes, write_bytes=$write_bytes\n"
+        ))
+        return text.substitute(
+            boot_time=datetime.fromtimestamp(boot_time).strftime("%Y-%m-%d %H:%M:%S"),
+            started=datetime.fromtimestamp(started).strftime("%Y-%m-%d %H:%M:%S"),
+            mem_total=self.bytes2human(mem.total),
+            mem_used=self.bytes2human(mem.used),
+            proc_mem_rss=self.bytes2human(proc_mem.rss),
+            read_count=self.bytes2human(io_counters.read_count),
+            write_count=self.bytes2human(io_counters.write_count),
+            read_bytes=self.bytes2human(io_counters.read_bytes),
+            write_bytes=self.bytes2human(io_counters.write_bytes)
         )
 
     def bytes2human(self, n, format="%(value).1f%(symbol)s"):

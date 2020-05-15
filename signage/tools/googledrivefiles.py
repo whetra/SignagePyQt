@@ -52,12 +52,12 @@ class GoogleDriveFiles:
 
     def _do_request_files(self, folder_id, developer_key):
         data = {
-            "q": f"'{folder_id}' in parents",
+            "q": "'{}' in parents".format(folder_id),
             "fields": "files(id,name,description,createdTime,mimeType,webContentLink)",
             "orderBy": "createdTime",
             "key": developer_key
         }
-        url = f"https://www.googleapis.com/drive/v3/files?" + urlencode(data)
+        url = "https://www.googleapis.com/drive/v3/files?" + urlencode(data)
         response = requests.get(url)
         return response.content if response.ok else None
 
