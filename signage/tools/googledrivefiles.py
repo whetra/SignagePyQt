@@ -24,8 +24,8 @@ class GoogleDriveFiles:
 
     def get_files(self):
         response_content = self._request_files()
-        if response_content:
-            content = json.loads(response_content)
+        content = self.load_json(response_content)
+        if content:
             for content_file in content.get("files", []):
                 drive_file = GoogleDriveFile()
                 drive_file.id = content_file.get("id", "")
@@ -35,6 +35,15 @@ class GoogleDriveFiles:
                 drive_file.mime_type = content_file.get("mimeType", "")
                 drive_file.web_content_link = content_file.get("webContentLink", "")
                 yield drive_file
+
+    def load_json(self, content):
+        try:
+            if content:
+                return json.loads(content.decode('utf-8'))
+            return None
+        except Exception as e:
+            print("{} GoogleDriveFiles Exception {} ({})".format(datetime.now(), e, content))
+            return None
 
     def _request_files(self):
         cache_item = self.cache.get(self.folder_id)
