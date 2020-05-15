@@ -7,12 +7,12 @@ from urllib.parse import urlparse
 class RssEntry:
 
     def __init__(self):
-        self.title = ''
-        self.description = ''
+        self.title = ""
+        self.description = ""
         self.published_datetime = datetime.now()
-        self.link = ''
-        self.short_link = ''
-        self.image = ''
+        self.link = ""
+        self.short_link = ""
+        self.image = ""
         self.enclosures = []
 
 
@@ -56,8 +56,8 @@ class RssFeeds:
     def _is_valid_feed(self, feed_url, feed):
         if feed is None:
             return False
-        elif 'bozo_exception' in feed:
-            print(f'{datetime.now()} {feed_url}: {feed.bozo_exception}')
+        elif "bozo_exception" in feed:
+            print("{} {}: {}".format(datetime.now(), feed_url, feed.bozo_exception))
             return False
         return True
 
@@ -80,36 +80,36 @@ class RssFeeds:
         return re
 
     def _get_title(self, entry):
-        if 'title' not in entry:
-            return ''
+        if "title" not in entry:
+            return ""
         return entry.title
 
     def _get_description(self, entry):
-        if 'description' not in entry:
-            return ''
+        if "description" not in entry:
+            return ""
         return entry.description
 
     def _get_image(self, entry):
         for enclosure in entry.enclosures:
-            if enclosure.type.startswith('image/'):
+            if enclosure.type.startswith("image/"):
                 return enclosure.href
-        return ''
+        return ""
 
     def _get_published_datetime(self, entry):
         # published_parsed returns standard Python 9-tuple
         # when constructing datetime we need year to seconds (6 fields)
-        if 'published' in entry:
+        if "published" in entry:
             return datetime(*entry.published_parsed[:6])
-        if 'updated' in entry:
+        if "updated" in entry:
             return datetime(*entry.updated_parsed[:6])
         return datetime.min  # cannot be None, because we want to sort
 
     def _get_short_link(self, entry):
         o = urlparse(entry.link)
         if o.netloc:
-            server = o.netloc.split(':', 1)[0]
-            return f'{o.scheme}://{server}'
+            server = o.netloc.split(":", 1)[0]
+            return "{}://{}".format(o.scheme, server)
         elif o.path:
-            server = o.path.split('/', 1)[0]
-            return f'{o.scheme}://{server}'
-        return ''
+            server = o.path.split("/", 1)[0]
+            return "{}://{}".format(o.scheme, server)
+        return ""

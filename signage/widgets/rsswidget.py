@@ -38,8 +38,8 @@ class RssWidget():
             self._done()
 
     def _show_html(self, html):
-        self._webEngineView1.setHtml('')
-        self._webEngineView1.setStyleSheet('background: transparent')
+        self._webEngineView1.setHtml("")
+        self._webEngineView1.setStyleSheet("background: transparent")
         self._webEngineView1.setHtml(html)
 
     def _done(self):
@@ -50,19 +50,19 @@ class RssWidget():
     def stop(self):
         self._entry_timeout_timer.stop()
         self._timeout_timer.stop()
-        self._webEngineView1.setHtml('')
+        self._webEngineView1.setHtml("")
         self._webEngineView1.hide()
 
     def _calc_html(self, entry, widget_height):
         max_description_height = widget_height - 84 - 50  # - .title - .footer
         description = self._sanitize(entry.description)
-        title_color = '#a1cfdf' if self.darkmode else '2b4b56'
-        entry_background_color = 'rgba(0,0,0,0.6)' if self.darkmode else 'white'
-        entry_color = '#EEEEEE' if self.darkmode else 'black'
-        a_color = 'CCCC00' if self.darkmode else '0000FF'
+        title_color = "#a1cfdf" if self.darkmode else "2b4b56"
+        entry_background_color = "rgba(0,0,0,0.6)" if self.darkmode else "white"
+        entry_color = "#EEEEEE" if self.darkmode else "black"
+        a_color = "CCCC00" if self.darkmode else "0000FF"
         if entry.image:
-            description += f'<div style="margin-top: 10px"><img src="{entry.image}" /></div>'
-            entry.image = ''
+            description += "<div style='margin-top: 10px'><img src='{}' /></div>".format(entry.image)
+            entry.image = ""
         html = Template((
             "<html>"
             "<head>"
@@ -103,15 +103,15 @@ class RssWidget():
             a_color=a_color,
             entry_title=entry.title,
             description=description,
-            entry_published_datetime=entry.published_datetime.strftime('%c'),
+            entry_published_datetime=entry.published_datetime.strftime("%c"),
             entry_link=entry.link,
             entry_short_link=entry.short_link)
 
     def _sanitize(self, dirty_html):
         if not dirty_html or dirty_html.isspace():
-            return ''
+            return ""
 
-        html = dirty_html.replace('<p>&nbsp;</p>', '')
+        html = dirty_html.replace("<p>&nbsp;</p>", "")
         try:
             cleaner = Cleaner(
                 page_structure=True,
@@ -129,10 +129,10 @@ class RssWidget():
                 annoying_tags=True,
                 remove_unknown_tags=True,
                 safe_attrs_only=True,
-                safe_attrs=frozenset(['src', 'color', 'href', 'title', 'class', 'name', 'id']),
-                remove_tags=('span', 'font', 'div'))
+                safe_attrs=frozenset(["src", "color", "href", "title", "class", "name", "id"]),
+                remove_tags=("span", "font", "div"))
             return cleaner.clean_html(html)
 
         except ParserError as e:
-            print(f'{datetime.now()} RssWidget ParserError {e} ({dirty_html})')
-            return ''
+            print("{} RssWidget ParserError {} ({})".format(datetime.now(), e, dirty_html))
+            return ""

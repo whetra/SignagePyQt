@@ -20,7 +20,7 @@ class ResourceWidget(QtCore.QObject):
 
     def start(self):
         self._label.setGeometry(self.qrect)
-        self._label.setStyleSheet('background-color: white')
+        self._label.setStyleSheet("background-color: white")
         self._set_next_text()
         self._label.show()
         self._label.raise_()
@@ -66,7 +66,7 @@ class ResourceWidget(QtCore.QObject):
         )
 
     def bytes2human(self, n, format="%(value).1f%(symbol)s"):
-        symbols = ('B', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y')
+        symbols = ("B", "K", "M", "G", "T", "P", "E", "Z", "Y")
         prefix = {}
         for i, s in enumerate(symbols[1:]):
             prefix[s] = 1 << (i + 1) * 10
@@ -83,5 +83,5 @@ class ResourceWidget(QtCore.QObject):
     def stop(self):
         self._timeout_timer.stop()
         self._text_timer.stop()
-        self._label.set_text('')
+        self._label.set_text("")
         self._label.hide()

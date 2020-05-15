@@ -6,19 +6,19 @@ class Image(QtWidgets.QWidget):
     def __init__(self, parentWidget):
         super().__init__(parentWidget)
         self._backgroundframe = QtWidgets.QFrame(self)
-        self._backgroundframe.setStyleSheet('background-color: rgba(0, 0, 0, 0.6); border-radius: 8px;')
+        self._backgroundframe.setStyleSheet("background-color: rgba(0, 0, 0, 0.6); border-radius: 8px;")
         self._backgroundframe.hide()
         self._imagelabel = QtWidgets.QLabel(self)
         self._imagelabel.hide()
         self._textlabel = QtWidgets.QLabel(self)
-        self._textlabel.setStyleSheet('font-family: Arial, Helvetica, sans-serif; font-size: 24px; color: #FFFFFF')
+        self._textlabel.setStyleSheet("font-family: Arial, Helvetica, sans-serif; font-size: 24px; color: #FFFFFF")
         self._textlabel.hide()
 
         self.background_visible = False
         self.text_visible = False
         self.bordersize = 0
 
-    def set_image(self, image_file, text=''):
+    def set_image(self, image_file, text=""):
         textheightadjustment = self._textlabel.height() if self.text_visible else 0
         max_imagesize = self.geometry().adjusted(self.bordersize, self.bordersize, -self.bordersize, -self.bordersize - textheightadjustment)
         pixmap = QtGui.QPixmap(image_file)
@@ -28,7 +28,7 @@ class Image(QtWidgets.QWidget):
             self._imagelabel.show()
             pixmap_rect = pixmap.rect()
         else:
-            print('pixmap.isNull(): ' + image_file)
+            print("pixmap.isNull(): " + image_file)
             self._imagelabel.hide()  # hide image, but still show background and text if applicable
             pixmap_rect = self._imagelabel.rect()  # keep current size
         self._backgroundframe.show() if self.background_visible else self._backgroundframe.hide()

@@ -23,7 +23,7 @@ class UrlImages():
         for url in self.urls:
             filepath = self.getimage(url)
             if filepath is not None:
-                yield filepath, ''
+                yield filepath, ""
 
     def getimage(self, url):
         cache_item = self.cache.get(url)
@@ -57,10 +57,10 @@ class UrlImages():
             image_type = imghdr.what(downloaded_filepath)
             if image_type is not None:
                 p = Path(downloaded_filepath)
-                new_filepath = Path(p.parent, f'{p.stem}.{image_type}')
+                new_filepath = Path(p.parent, "{}.{}".format(p.stem, image_type))
                 p.rename(new_filepath)
                 return new_filepath
             return None
         except urllib.error.HTTPError as e:
-            print(f'{datetime.now()} UrlImages HTTPError {e} ({url})')
+            print("{} UrlImages HTTPError {} ({})".format(datetime.now(), e, url))
             return None

@@ -8,10 +8,10 @@ import json
 class GoogleDriveFile:
 
     def __init__(self):
-        self.description = ''
+        self.description = ""
         self.created_time = datetime.now()
-        self.mime_type = ''
-        self.web_content_link = ''
+        self.mime_type = ""
+        self.web_content_link = ""
 
 
 class GoogleDriveFiles:

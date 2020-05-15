@@ -41,8 +41,8 @@ class WebPagesWidget():
         else:
             self._parent.setGeometry(self.qrect)
         self._webEngineView1.setGeometry(QtCore.QRect(0, 0, self.qrect.width(), self.qrect.height()))
-        self._webEngineView1.setHtml('')
-        self._webEngineView1.setStyleSheet('background:transparent;')
+        self._webEngineView1.setHtml("")
+        self._webEngineView1.setStyleSheet("background:transparent;")
         self._webEngineView1.setUrl(QtCore.QUrl(nexturl))
 
     def _animate_geometry(self):
@@ -61,5 +61,5 @@ class WebPagesWidget():
     def stop(self):
         self._url_timeout_timer.stop()
         self._timeout_timer.stop()
-        self._webEngineView1.setHtml('')
+        self._webEngineView1.setHtml("")
         self._parent.hide()

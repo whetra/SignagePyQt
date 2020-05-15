@@ -7,7 +7,7 @@ class ImageWidget():
     def __init__(self, parentWidget, callback):
         self.parentWidget = parentWidget
         self.callback = callback
-        self.image = ''
+        self.image = ""
         self.timeout = 0
         self.qrect = QtCore.QRect(0, 0, 100, 100)
         self._timeout_timer = QTimerSingleShot(self._done)
@@ -16,9 +16,9 @@ class ImageWidget():
     def start(self):
         self._webEngineView1.setGeometry(self.qrect)
         if self.image:
-            self._webEngineView1.setHtml('')  # crash if not emptied first
+            self._webEngineView1.setHtml("")  # crash if not emptied first
             self._webEngineView1.setUrl(QtCore.QUrl(self.image))
-            self._webEngineView1.setStyleSheet('background:transparent')
+            self._webEngineView1.setStyleSheet("background:transparent")
         self._webEngineView1.show()
         self._webEngineView1.raise_()
 
@@ -31,5 +31,5 @@ class ImageWidget():
 
     def stop(self):
         self._timeout_timer.stop()
-        self._webEngineView1.setHtml('')
+        self._webEngineView1.setHtml("")
         self._webEngineView1.hide()

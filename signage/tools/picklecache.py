@@ -31,18 +31,18 @@ class PickleCache:
         self._write_cache(cache)
 
     def _write_cache(self, cache):
-        with self.pickle_file.open('wb') as f:
+        with self.pickle_file.open("wb") as f:
             pickle.dump(cache, f)
 
     def _read_cache(self):
         if not self.pickle_file.exists():
             return {}
         try:
-            with self.pickle_file.open('rb') as f:
+            with self.pickle_file.open("rb") as f:
                 return pickle.loads(f.read())
         except EOFError as e:
-            print(f'{datetime.now()} PickleCache {self.pickle_file} EOFError: {e}')
+            print("{} PickleCache {} EOFError: {}".format(datetime.now(), self.pickle_file, e))
             return {}
         except Exception as e:
-            print(f'{datetime.now()} PickleCache {self.pickle_file} Exception: {e}')
+            print("{} PickleCache {} Exception: {}".format(datetime.now(), self.pickle_file, e))
             return {}
