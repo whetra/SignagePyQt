@@ -64,3 +64,6 @@ class UrlImages():
         except urllib.error.HTTPError as e:
             print("{} UrlImages HTTPError {} ({})".format(datetime.now(), e, url))
             return None
+        except FileNotFoundError as e:
+            print("{} UrlImages FileNotFoundError {} ({}) ({})".format(datetime.now(), e, url, self.images_directory))
+            return None
