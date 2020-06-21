@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
 from .image import Image
-from tools.timer import QTimerSingleShot
+from .widgettimers import WidgetTimers
 
 
 class ImagesWidget():
@@ -15,15 +15,16 @@ class ImagesWidget():
         self.text_visible = False
         self.bordersize = 0
         self.qrect = QtCore.QRect(0, 0, 100, 100)
-        self._timeout_timer = QTimerSingleShot(self._done)
-        self._image_timeout_timer = QTimerSingleShot(self._show_next_image)
+        self._timers = WidgetTimers(self._done, self._show_next_image, self._done)
         self._image = Image(self.parentWidget)
+        self._done_timeout = 2000  # wait 2 seconds when no entries were shown to prevent high cpu usage
 
     def start(self):
         self._image.setGeometry(self.qrect)
         self._images = self.imageprovider.getimages() if self.imageprovider is not None else iter(())
         if self.timeout > 0:
-            self._timeout_timer.start(self.timeout)
+            self._timers.start_timeout_timer(self.timeout)
+        self._done_timeout = 2000  # reset _done_timeout
         self._show_next_image()
         self._image.show()
         self._image.raise_()
@@ -32,9 +33,10 @@ class ImagesWidget():
         try:
             image, title = next(self._images)
             self._show_image(image, title)
-            self._image_timeout_timer.start(self.imagetimeout)
+            self._done_timeout = 100  # wait 100 ms
+            self._timers.start_next_timer(self.imagetimeout)
         except StopIteration:
-            self._done()
+            self._timers.start_done_timer(self._done_timeout)
 
     def _show_image(self, image, title):
         self._image.background_visible = self.background_visible
@@ -43,11 +45,9 @@ class ImagesWidget():
         self._image.set_image(image, title)
 
     def _done(self):
-        self._image_timeout_timer.stop()
-        self._timeout_timer.stop()
+        self._timers.stop()
         self.callback(self)
 
     def stop(self):
-        self._image_timeout_timer.stop()
-        self._timeout_timer.stop()
+        self._timers.stop()
         self._image.hide()

@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWebKitWidgets
-from tools.timer import QTimerSingleShot
+from .widgettimers import WidgetTimers
 
 
 class ImageWidget():
@@ -10,7 +10,7 @@ class ImageWidget():
         self.image = ""
         self.timeout = 0
         self.qrect = QtCore.QRect(0, 0, 100, 100)
-        self._timeout_timer = QTimerSingleShot(self._done)
+        self._timers = WidgetTimers(self._done, None, None)
         self._webEngineView1 = QtWebKitWidgets.QWebView(self.parentWidget)
 
     def start(self):
@@ -23,13 +23,13 @@ class ImageWidget():
         self._webEngineView1.raise_()
 
         if self.timeout > 0:
-            self._timeout_timer.start(self.timeout)
+            self._timers.start_timeout_timer(self.timeout)
 
     def _done(self):
-        self._timeout_timer.stop()
+        self._timers.stop()
         self.callback(self)
 
     def stop(self):
-        self._timeout_timer.stop()
+        self._timers.stop()
         self._webEngineView1.setHtml("")
         self._webEngineView1.hide()

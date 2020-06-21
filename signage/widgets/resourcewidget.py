@@ -3,7 +3,7 @@ import os
 import psutil
 from string import Template
 from datetime import datetime
-from tools.timer import QTimerSingleShot
+from .widgettimers import WidgetTimers
 
 
 class ResourceWidget(QtCore.QObject):
@@ -14,9 +14,8 @@ class ResourceWidget(QtCore.QObject):
         self.callback = callback
         self.timeout = 0
         self.qrect = QtCore.QRect(0, 0, 100, 100)
-        self._timeout_timer = QTimerSingleShot(self._done)
+        self._timers = WidgetTimers(self._done, self._set_next_text, None)
         self._label = QtWidgets.QLabel(self.parentWidget)
-        self._text_timer = QTimerSingleShot(self._set_next_text)
 
     def start(self):
         self._label.setGeometry(self.qrect)
@@ -26,11 +25,11 @@ class ResourceWidget(QtCore.QObject):
         self._label.raise_()
 
         if self.timeout > 0:
-            self._timeout_timer.start(self.timeout)
+            self._timers.start_timeout_timer(self.timeout)
 
     def _set_next_text(self):
         self._set_text()
-        self._text_timer.start(2000)
+        self._timers.start_next_timer(2000)
 
     def _set_text(self):
         text = self._get_text()
@@ -77,11 +76,10 @@ class ResourceWidget(QtCore.QObject):
         return format % dict(symbol=symbols[0], value=n)
 
     def _done(self):
-        self._timeout_timer.stop()
+        self._timers.stop()
         self.callback(self)
 
     def stop(self):
-        self._timeout_timer.stop()
-        self._text_timer.stop()
+        self._timers.stop()
         self._label.set_text("")
         self._label.hide()

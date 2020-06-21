@@ -1,5 +1,5 @@
 from enum import Enum
-from tools.timer import QTimerSingleShot
+from .widgettimers import WidgetTimers
 
 
 class CallbackType(Enum):
@@ -23,7 +23,8 @@ class CombineWidget:
         self.callbacks = set()
         for widget in self.widgets:
             widget.callback = self._widgetcallback
-        self._timeout_timer = QTimerSingleShot(self._done)
+        self._timers = WidgetTimers(self._done, None, self._done)
+        self._done_timeout = 100
 
     def start(self):
         self.running = True
@@ -32,15 +33,15 @@ class CombineWidget:
             widget.start()
 
         if self.timeout > 0:
-            self._timeout_timer.start(self.timeout)
+            self._timers.start_timeout_timer(self.timeout)
 
     def _done(self):
-        self._timeout_timer.stop()
+        self._timers.stop()
         self.callback(self)
 
     def stop(self):
         self.running = False
-        self._timeout_timer.stop()
+        self._timers.stop()
         for widget in self.widgets:
             widget.stop()
 
@@ -51,16 +52,16 @@ class CombineWidget:
         self.callbacks.add(widget)  # add widget to list of widget
         if self.callback_type is CallbackType.FIRST_WIDGET:
             if len(self.callbacks) == 1:  # if first one added
-                self._done()
+                self._timers.start_done_timer(self._done_timeout)
         elif self.callback_type is CallbackType.LAST_WIDGET:
             if len(self.callbacks) == len(self.widgets):  # if all are added
-                self._done()
+                self._timers.start_done_timer(self._done_timeout)
         elif self.callback_type is CallbackType.LAST_WIDGET_RESTART:
             if len(self.callbacks) == len(self.widgets):  # if all are added
-                self._done()
+                self._timers.start_done_timer(self._done_timeout)
             else:
                 widget.stop()
                 widget.start()
         elif self.callback_type is CallbackType.CALLBACK_WIDGET:
             if widget is self.callback_widget:
-                self._done()
+                self._timers.start_done_timer(self._done_timeout)

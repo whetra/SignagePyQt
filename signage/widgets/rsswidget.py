@@ -1,9 +1,9 @@
 from PyQt5 import QtWebKitWidgets
 from datetime import datetime
 from string import Template
-from tools.timer import QTimerSingleShot
 from lxml.html.clean import Cleaner
 from lxml.etree import ParserError
+from .widgettimers import WidgetTimers
 
 
 class RssWidget():
@@ -15,15 +15,18 @@ class RssWidget():
         self.timeout = 0
         self.entrytimeout = 5000
         self.darkmode = False
-        self._timeout_timer = QTimerSingleShot(self._done)
-        self._entry_timeout_timer = QTimerSingleShot(self._show_next_html)
+        self._timers = WidgetTimers(self._done, self._show_next_html, self._done)
         self._webEngineView1 = QtWebKitWidgets.QWebView(self.parentWidget)
+        self._webEngineView1.setStyleSheet("background: transparent")
+        self._webEngineView1.setHtml("")  # prevents blurry background
+        self._done_timeout = 2000  # wait 2 seconds when no entries were shown to prevent high cpu usage
 
     def start(self):
         self._webEngineView1.setGeometry(self.qrect)
         self._entries = self.rss_entry_provider.get_entries() if self.rss_entry_provider is not None else iter(())
         if self.timeout > 0:
-            self._timeout_timer.start(self.timeout)
+            self._timers.start_timeout_timer(self.timeout)
+        self._done_timeout = 2000  # reset _done_timeout
         self._show_next_html()
         self._webEngineView1.show()
         self._webEngineView1.raise_()
@@ -32,24 +35,19 @@ class RssWidget():
         try:
             entry = next(self._entries)
             html = self._calc_html(entry, self.qrect.height())
-            self._show_html(html)
-            self._entry_timeout_timer.start(self.entrytimeout)
+            self._webEngineView1.setHtml("")
+            self._webEngineView1.setHtml(html)
+            self._done_timeout = 100  # wait 100 ms
+            self._timers.start_next_timer(self.entrytimeout)
         except StopIteration:
-            self._done()
-
-    def _show_html(self, html):
-        self._webEngineView1.setHtml("")
-        self._webEngineView1.setStyleSheet("background: transparent")
-        self._webEngineView1.setHtml(html)
+            self._timers.start_done_timer(self._done_timeout)
 
     def _done(self):
-        self._entry_timeout_timer.stop()
-        self._timeout_timer.stop()
+        self._timers.stop()
         self.callback(self)
 
     def stop(self):
-        self._entry_timeout_timer.stop()
-        self._timeout_timer.stop()
+        self._timers.stop()
         self._webEngineView1.setHtml("")
         self._webEngineView1.hide()
 
