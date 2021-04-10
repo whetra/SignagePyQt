@@ -27,7 +27,6 @@ class ImagesWidget():
         self._done_timeout = 2000  # reset _done_timeout
         self._show_next_image()
         self._image.show()
-        self._image.raise_()
 
     def _show_next_image(self):
         try:

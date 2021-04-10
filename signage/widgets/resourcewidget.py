@@ -22,7 +22,6 @@ class ResourceWidget(QtCore.QObject):
         self._label.setStyleSheet("background-color: white")
         self._set_next_text()
         self._label.show()
-        self._label.raise_()
 
         if self.timeout > 0:
             self._timers.start_timeout_timer(self.timeout)

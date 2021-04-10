@@ -22,7 +22,6 @@ class WebPageWidget():
             self._webEngineView1.setStyleSheet("background:transparent")
             self._webEngineView1.setUrl(QtCore.QUrl(self.url))
         self._webEngineView1.show()
-        self._webEngineView1.raise_()
 
     def _done(self):
         self._timers.stop()

@@ -28,7 +28,6 @@ class WebPagesWidget():
         self._done_timeout = 2000  # reset _done_timeout
         self._show_next_url()
         self._parent.show()
-        self._parent.raise_()
 
     def _show_next_url(self):
         try:

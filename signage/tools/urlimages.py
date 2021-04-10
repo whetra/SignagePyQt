@@ -1,9 +1,9 @@
-import wget
 import urllib
 from pathlib import Path
 import imghdr
 from datetime import timedelta
 from datetime import datetime
+from . import urldownload
 
 
 class UrlImages():
@@ -53,14 +53,17 @@ class UrlImages():
 
     def _download_file(self, url):
         try:
-            downloaded_filepath = wget.download(url, out=str(self.images_directory))
+            downloaded_filepath = urldownload.download(url, self.images_directory)
+            if downloaded_filepath is None:
+                return None
             image_type = imghdr.what(downloaded_filepath)
-            if image_type is not None:
-                p = Path(downloaded_filepath)
-                new_filepath = Path(p.parent, "{}.{}".format(p.stem, image_type))
-                p.rename(new_filepath)
-                return new_filepath
-            return None
+            if image_type is None:
+                return None
+
+            p = Path(downloaded_filepath)
+            new_filepath = Path(p.parent, "{}.{}".format(p.stem, image_type))
+            p.rename(new_filepath)
+            return new_filepath
         except urllib.error.URLError as e:
             print("{} UrlImages URLError {} ({})".format(datetime.now(), e, url))
             return None

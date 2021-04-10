@@ -20,7 +20,6 @@ class ImageWidget():
             self._webEngineView1.setUrl(QtCore.QUrl(self.image))
             self._webEngineView1.setStyleSheet("background:transparent")
         self._webEngineView1.show()
-        self._webEngineView1.raise_()
 
         if self.timeout > 0:
             self._timers.start_timeout_timer(self.timeout)

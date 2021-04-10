@@ -8,6 +8,7 @@ from widgets.rsswidget import RssWidget
 from tools.rssimages import RssImages
 from tools.rssfeeds import RssFeeds
 from tools.picklecache import PickleCache
+from tools.urlimages import UrlImages
 
 
 class Display():
@@ -18,10 +19,15 @@ class Display():
     def start(self):
         cache_dir = Path.home() / '.cache/example'
 
-        self._image = ImageWidget(self.centralWidget, self._callback)
-        self._image.image = 'https://papers.co/wallpaper/papers.co-mt01-winter-mountain-snow-bw-nature-white-35-3840x2160-4k-wallpaper.jpg'
-        self._image.qrect = QtCore.QRect(0, 0, 1920, 1080)
-        self._image.start()
+        self._wallpaper = ImagesWidget(self.centralWidget, self._callback)
+        self._wallpaper.imageprovider = UrlImages(
+            cache_dir / 'Wallpaper',
+            PickleCache(cache_dir / 'Wallpaper.pkl'))
+        self._wallpaper.imageprovider.urls = ['https://papers.co/wallpaper/papers.co-mt01-winter-mountain-snow-bw-nature-white-35-3840x2160-4k-wallpaper.jpg']
+        self._wallpaper.imagetimeout = 60000 # 1800000 # 30 minutes
+        self._wallpaper.qrect = QtCore.QRect(0, 0, 1920, 1080)
+        self._wallpaper.next = self._wallpaper
+        self._wallpaper.start()
 
         self._rw = ResourceWidget(self.centralWidget, self._callback)
         self._rw.qrect = QtCore.QRect(800, 930, 320, 100)

@@ -29,7 +29,6 @@ class RssWidget():
         self._done_timeout = 2000  # reset _done_timeout
         self._show_next_html()
         self._webEngineView1.show()
-        self._webEngineView1.raise_()
 
     def _show_next_html(self):
         try:
