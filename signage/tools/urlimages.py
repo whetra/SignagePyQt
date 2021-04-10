@@ -61,6 +61,9 @@ class UrlImages():
                 p.rename(new_filepath)
                 return new_filepath
             return None
+        except urllib.error.URLError as e:
+            print("{} UrlImages URLError {} ({})".format(datetime.now(), e, url))
+            return None
         except urllib.error.HTTPError as e:
             print("{} UrlImages HTTPError {} ({})".format(datetime.now(), e, url))
             return None

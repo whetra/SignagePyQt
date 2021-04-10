@@ -42,7 +42,7 @@ class GoogleDriveFiles:
                 return json.loads(content.decode('utf-8'))
             return None
         except Exception as e:
-            print("{} GoogleDriveFiles Exception {} ({})".format(datetime.now(), e, content))
+            print("{} GoogleDriveFiles Exception in load_json {} ({})".format(datetime.now(), e, content))
             return None
 
     def _request_files(self):
@@ -60,15 +60,19 @@ class GoogleDriveFiles:
         return None
 
     def _do_request_files(self, folder_id, developer_key):
-        data = {
-            "q": "'{}' in parents".format(folder_id),
-            "fields": "files(id,name,description,createdTime,mimeType,webContentLink)",
-            "orderBy": "createdTime",
-            "key": developer_key
-        }
-        url = "https://www.googleapis.com/drive/v3/files?" + urlencode(data)
-        response = requests.get(url)
-        return response.content if response.ok else None
+        try:
+            data = {
+                "q": "'{}' in parents".format(folder_id),
+                "fields": "files(id,name,description,createdTime,mimeType,webContentLink)",
+                "orderBy": "createdTime",
+                "key": developer_key
+            }
+            url = "https://www.googleapis.com/drive/v3/files?" + urlencode(data)
+            response = requests.get(url)
+            return response.content if response.ok else None
+        except Exception as e:
+            print("{} GoogleDriveFiles Exception in _do_request_files {}".format(datetime.now(), e))
+            return None
 
     def _is_valid_cache_item(self, cache_item, check_expired):
         if cache_item is None:
