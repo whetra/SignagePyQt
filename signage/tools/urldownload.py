@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import re
 
-def download(url, output_directory: Path):
+def download(url, output_directory: Path) -> Path:
     try:
         response = requests.get(url, allow_redirects=True, stream = True)
     except Exception as e:
@@ -14,7 +14,7 @@ def download(url, output_directory: Path):
     if response.status_code != 200:
         print("{} urldownload requests.get status_code {}: {}".format(datetime.now(), response.status_code, url))
         return None
-        
+
     filename = _detect_filename(url, response.headers)
     if filename is None:
         print("{} urldownload filename not detected: {}, {}".format(datetime.now(), url, response.headers))

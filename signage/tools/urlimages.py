@@ -56,7 +56,9 @@ class UrlImages():
             downloaded_filepath = urldownload.download(url, self.images_directory)
             if downloaded_filepath is None:
                 return None
-            image_type = imghdr.what(downloaded_filepath)
+
+            # imghdr only supports Path since version 3.6, our Raspberry Pi's have version 3.5
+            image_type = imghdr.what(str(downloaded_filepath))
             if image_type is None:
                 return None
 
