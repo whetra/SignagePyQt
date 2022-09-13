@@ -52,7 +52,7 @@ class WebPagesWidget():
         if self.animation is None:
             self.animation = QtCore.QPropertyAnimation(self._parent, b"geometry")
             self.animation.setDuration(400)
-        self.animation.setStartValue(QtCore.QRect(self.qrect.left() + self.qrect.width() / 2, self.qrect.top(), 0, self.qrect.height()))
+        self.animation.setStartValue(QtCore.QRect(int(self.qrect.left() + self.qrect.width() / 2), self.qrect.top(), 0, self.qrect.height()))
         self.animation.setEndValue(self.qrect)
         self.animation.start()
 
